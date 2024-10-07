@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Linux Terminal</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-size: 2rem;
+        }
+
+        #terminal {
+            width: 90%;
+            max-width: 900px;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #2e3436;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+        }
+
+        #output {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: #1d1f21;
+            border: 2px solid #4a90e2;
+            border-radius: 5px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            color: #d3d7cf;
+        }
+
+        #command {
+            margin-top: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 2px solid #0072ff;
+            outline: none;
+            width: 100%;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .command-line {
+            color: #8ae234;
+        }
+
+        .error {
+            color: #cc0000;
+        }
+
+        @media (max-width: 768px) {
+            #terminal {
+                height: 60vh;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            #command {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #terminal {
+                height: 50vh;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #command {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Responsive Linux Terminal</h1>
+        <div id="terminal">
+            <div id="output"></div>
+            <input id="command" placeholder="Type command here..." autocomplete="off" />
+        </div>
+    </div>
+
+    <script>
+        const commandInput = document.getElementById('command');
+        const outputArea = document.getElementById('output');
+
+        commandInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                const command = commandInput.value;
+
+                // Send the command to the backend using AJAX
+                fetch('http://52.66.159.208:80/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: command })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the command output
+                    outputArea.innerHTML += `<p class="command-line">$ ${command}</p>`;
+                    outputArea.innerHTML += `<p>${data.output.replace(/\n/g, '<br>')}</p>`;
+                    outputArea.scrollTop = outputArea.scrollHeight;
+                    commandInput.value = '';
+                })
+                .catch(error => {
+                    outputArea.innerHTML += `<p class="error">Error: ${error}</p>`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

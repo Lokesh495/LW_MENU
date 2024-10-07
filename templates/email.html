@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email</title>
+    <style>
+        /* Reset some basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a90e2, #50a9e3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            letter-spacing: 1.5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #28a745;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        button:active {
+            background-color: #1e7e34;
+        }
+
+        #responseMessage {
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Send Email</h2>
+        <form id="emailForm">
+            <label for="sender_email">Sender's Email:</label>
+            <input type="email" id="sender_email" name="sender_email" placeholder="Your email" required>
+
+            <label for="password">Password:App Password</label>
+            <input type="password" id="password" name="password" placeholder="Your password" required>
+
+            <label for="receiver_email">Receiver's Email:</label>
+            <input type="email" id="receiver_email" name="receiver_email" placeholder="Recipient's email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" placeholder="Write your message here" required></textarea>
+
+            <button type="button" onclick="sendEmail()">Send Email</button>
+        </form>
+
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        function sendEmail() {
+            const senderEmail = document.getElementById('sender_email').value;
+            const password = document.getElementById('password').value;
+            const receiverEmail = document.getElementById('receiver_email').value;
+            const message = document.getElementById('message').value;
+
+            const data = {
+                sender_email: senderEmail,
+                password: password,
+                receiver_email: receiverEmail,
+                message: message
+            };
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:80/send_email', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById('responseMessage').innerText = xhr.responseText;
+                    document.getElementById('responseMessage').style.color = 'lightgreen';
+                } else if (xhr.readyState === 4) {
+                    document.getElementById('responseMessage').innerText = xhr.responseText;
+                    document.getElementById('responseMessage').style.color = 'red';
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
+

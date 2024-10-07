@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Terminal Emulator</title>
+    <style>
+        body {
+            background-color: #1d1f21;
+            color: #c5c8c6;
+            font-family: monospace;
+        }
+        #terminal {
+            width: 80%;
+            height: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #000;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        #output {
+            height: 300px;
+            overflow-y: auto;
+        }
+        #command {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: #c5c8c6;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+        <input id="command" placeholder="Type command here..." autocomplete="off" />
+    </div>
+
+    <script>
+        const commandInput = document.getElementById('command');
+        const outputArea = document.getElementById('output');
+
+        // WebSocket or AJAX for backend communication
+        const socket = new WebSocket('ws://13.233.196.246:5000/ws');  // Example WebSocket URL
+
+        commandInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                const command = commandInput.value;
+                if (command.trim()) {
+                    socket.send(command);  // Send the command to the backend via WebSocket
+                    commandInput.value = '';  // Clear input box
+                }
+            }
+        });
+
+        // Receiving output from backend
+        socket.onmessage = function (event) {
+            const result = event.data;
+            outputArea.innerHTML += `<p>${result}</p>`;
+            outputArea.scrollTop = outputArea.scrollHeight;  // Auto-scroll to the latest result
+        };
+    </script>
+</body>
+</html>

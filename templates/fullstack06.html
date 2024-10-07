@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Voice Interaction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f2f2f2;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    #response {
+      border: 1px solid #ddd;
+      padding: 20px;
+      max-width: 600px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>ChatGPT Voice Interaction</h1>
+  <button id="start">Speak to ChatGPT</button>
+  <div id="response"></div>
+
+  <script>
+    const startButton = document.getElementById('start');
+    const responseDiv = document.getElementById('response');
+
+    // Function to handle speech recognition
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        responseDiv.innerHTML = `You said: ${transcript}`;
+
+        // Send transcript to backend (Flask server)
+        fetch('http://127.0.0.1:80/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: transcript }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            responseDiv.innerHTML = `ChatGPT: ${data.reply}`;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            responseDiv.innerHTML = 'Error occurred. Please try again.';
+          });
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        responseDiv.innerHTML = 'Error with speech recognition. Please try again.';
+      };
+    }
+
+    startButton.addEventListener('click', startSpeechRecognition);
+  </script>
+</body>
+</html>

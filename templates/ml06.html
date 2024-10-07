@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Capture and Filter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin: 20px 0;
+            color: #4CAF50;
+        }
+        #video {
+            width: 100%;
+            max-width: 640px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #canvas {
+            display: none;
+        }
+        #filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .filter-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 16px;
+        }
+        .filter-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .filter-btn:active {
+            background-color: #00408d;
+        }
+        #output-image {
+            display: none;
+            max-width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        @media (max-width: 768px) {
+            #filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Capture Image and Apply Filter</h1>
+    <video id="video" autoplay></video>
+    <button id="capture" class="filter-btn">Capture Image</button>
+    <canvas id="canvas"></canvas>
+    <div id="filters">
+        <button class="filter-btn" data-filter="sunglasses">Sunglasses</button>
+        <button class="filter-btn" data-filter="cap">Cap</button>
+        <button class="filter-btn" data-filter="stars">Stars</button>
+        <button class="filter-btn" data-filter="blur">Background Blur</button>
+        <button class="filter-btn" data-filter="beauty">Face Beauty</button>
+    </div>
+    <img id="output-image" alt="Filtered Image"/>
+    
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const outputImage = document.getElementById('output-image');
+        const captureButton = document.getElementById('capture');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => console.error('Error accessing webcam: ', err));
+
+        captureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            outputImage.src = canvas.toDataURL('image/png');
+            outputImage.style.display = 'block';
+        });
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const filter = event.target.getAttribute('data-filter');
+                const imageData = outputImage.src.split(',')[1];
+
+                const response = await fetch('http://127.0.0.1:80/apply-filter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData, filter: filter })
+                });
+
+                const result = await response.json();
+                outputImage.src = `data:image/png;base64,${result.image}`;
+            });
+        });
+    </script>
+</body>
+</html>

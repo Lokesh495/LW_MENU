@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4a90e2, #50a9e3);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .icon {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .icon:hover {
+            transform: translateY(-10px);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .icon i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .icon p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .icon-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .icon {
+                padding: 1.5rem;
+            }
+
+            .icon i {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .icon-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .icon {
+                padding: 1rem;
+            }
+
+            .icon i {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .icon-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .icon {
+                padding: 0.8rem;
+            }
+
+            .icon i {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PYTHON TASK</h1>
+        <div class="icon-grid">
+            <a href="email.html" class="icon">
+                <i class="fas fa-envelope"></i>
+                <p>Send Email</p>
+            </a>
+            <a href="bulk_email.html" class="icon">
+                <i class="fas fa-mail-bulk"></i>
+                <p>Send Bulk Email</p>
+            </a>
+            <a href="send_sms.html" class="icon">
+                <i class="fas fa-sms"></i>
+                <p>Send SMS</p>
+            </a>
+            <a href="textToSpeech.html" class="icon">
+                <i class="fas fa-volume-up"></i>
+                <p>Text-to-Speech</p>
+            </a>
+            <a href="volume.html" class="icon">
+                <i class="fas fa-volume-mute"></i>
+                <p>Control Volume</p>
+            </a>
+            <a href="geolocation.html" class="icon">
+                <i class="fas fa-map-marker-alt"></i>
+                <p>Geolocation</p>
+            </a>
+            <a href="adb.html" class="icon">
+                <i class="fas fa-mobile-alt"></i>
+                <p>Connect Android</p>
+            </a>
+            <a href="gogsearch.html" class="icon">
+                <i class="fas fa-search"></i>
+                <p>Top-5 Google Search</p>
+            </a>
+            <a href="fullstack01.html" class="icon">
+                <i class="fas fa-microphone"></i>
+                <p>Speech to Text</p>
+            </a>
+            <a href="fullstack02.html" class="icon">
+                <i class="fas fa-camera"></i>
+                <p>Click Photo</p>
+            </a>
+            <a href="fullstack03.html" class="icon">
+                <i class="fas fa-video"></i>
+                <p>Live Stream</p>
+            </a>
+            <a href="terminal01.html" class="icon">
+                <i class="fas fa-terminal"></i>
+                <p>Linux Terminal</p>
+            </a>
+            <a href="launch_instan.html" class="icon">
+                <i class="fas fa-cloud"></i>
+                <p>EC2 Instance Launch</p>
+            </a>
+            <a href="what.html" class="icon">
+                <i class="fab fa-whatsapp"></i>
+                <p>Send WhatsApp Message</p>
+            </a>
+            <a href="fullstack06.html" class="icon">
+                <i class="fas fa-robot"></i>
+                <p>Gemini Bot</p>
+            </a>
+            <!-- New Icons -->
+            <a href="ml03.html" class="icon">
+                <i class="fas fa-crop-alt"></i>
+                <p>Face Crop Image</p>
+            </a>
+            <a href="ml04.html" class="icon">
+                <i class="fas fa-image"></i>
+                <p>Image with Filters</p>
+            </a>
+            <a href="docker01.html" class="icon">
+                <i class="fas fa-box"></i>
+                <p>Docker Menu</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

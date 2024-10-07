@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC2 Instance Launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #87CEFA 0%, #1E90FF 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: gradient-animation 5s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #1E90FF;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            display: none;
+            animation: slideDown 0.5s ease-in-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Launch EC2 Instance</h1>
+        <form id="ec2Form">
+            <input type="text" id="region" placeholder="AWS Region (e.g. us-east-1)" required>
+            <select id="instanceType" required>
+                <option value="">Select Instance Type</option>
+                <option value="t2.micro">t2.micro</option>
+                <option value="t2.small">t2.small</option>
+                <option value="t2.medium">t2.medium</option>
+            </select>
+            <button type="submit">Launch EC2</button>
+        </form>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('ec2Form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const region = document.getElementById('region').value;
+            const instanceType = document.getElementById('instanceType').value;
+
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = 'Launching EC2 instance...';
+
+            fetch('http://13.201.32.23:80/launch-ec2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    access_key: 'YOUR_ACCESS_KEY', // Replace with your access key
+                    secret_key: 'YOUR_SECRET_KEY', // Replace with your secret key
+                    region: region,
+                    instance_type: instanceType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    statusDiv.style.backgroundColor = '#e74c3c';
+                    statusDiv.textContent = `Error: ${data.error}`;
+                } else {
+                    statusDiv.style.backgroundColor = '#2ecc71';
+                    statusDiv.textContent = `Success! Instance ID: ${data.instance_id}`;
+                }
+            })
+            .catch(error => {
+                statusDiv.style.backgroundColor = '#e74c3c';
+                statusDiv.textContent = `Error: ${error.message}`;
+            });
+        });
+    </script>
+</body>
+</html>

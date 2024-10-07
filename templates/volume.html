@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4a90e2, #50a9e3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: black;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        p {
+            color: #000000;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Control Laptop Volume</h1>
+    <input type="range" id="volumeSlider" min="0" max="100" value="50">
+    <p>Current Volume: <span id="currentVolume">50</span>%</p>
+</div>
+
+<script>
+    const volumeSlider = document.getElementById('volumeSlider');
+    const currentVolume = document.getElementById('currentVolume');
+
+    // Fetch the current volume on page load
+    fetch('http://127.0.0.1:80/get_volume')
+        .then(response => response.json())
+        .then(data => {
+            volumeSlider.value = data.volume;
+            currentVolume.textContent = data.volume;
+        });
+
+    volumeSlider.addEventListener('input', () => {
+        const volume = volumeSlider.value;
+        currentVolume.textContent = volume;
+
+        // Send the volume to the backend using AJAX
+        fetch('http://127.0.0.1:80/set_volume', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ volume: volume })
+        });
+    });
+</script>
+
+</body>
+</html>
+

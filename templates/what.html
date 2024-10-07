@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send WhatsApp Message</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e5ddd5;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 500px;
+            position: relative;
+        }
+
+        .chat-header {
+            font-size: 1.6rem;
+            color: #25d366;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            width: 60px;
+            height: 5px;
+            background-color: #25d366;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 2px solid #d9dbd9;
+            border-radius: 12px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: #25d366;
+        }
+
+        button {
+            background-color: #25d366;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1e8e4b;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #1c7a43;
+        }
+
+        .response {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        .response span {
+            font-weight: bold;
+        }
+
+        .response .success {
+            color: #25d366;
+        }
+
+        .response .error {
+            color: #e91e63;
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                width: 90%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Send WhatsApp Message</div>
+        <input type="text" id="number" placeholder="Enter WhatsApp Number (+91 format)">
+        <textarea id="message" rows="4" placeholder="Enter your message"></textarea>
+        <button id="sendBtn">Send Message</button>
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            const number = document.getElementById('number').value;
+            const message = document.getElementById('message').value;
+
+            if (number && message) {
+                fetch('http://13.233.196.246:80/send_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ number: number, message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const responseDiv = document.getElementById('response');
+                    if (data.success) {
+                        responseDiv.innerHTML = '<span class="success">' + data.success + '</span>';
+                    } else {
+                        responseDiv.innerHTML = '<span class="error">' + data.error + '</span>';
+                    }
+                });
+            } else {
+                alert('Please fill in both fields');
+            }
+        });
+    </script>
+</body>
+</html>

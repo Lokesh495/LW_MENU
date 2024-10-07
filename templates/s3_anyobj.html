@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3 File Upload</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #4e54c8;
+            overflow: hidden;
+        }
+
+        /* Bubble animation */
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rise 10s infinite ease-in-out;
+            opacity: 0.7;
+        }
+
+        @keyframes rise {
+            0% {
+                bottom: -50px;
+                opacity: 0;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 0.4;
+            }
+            100% {
+                bottom: 120%;
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .bubble:nth-child(2) { animation-duration: 12s; width: 60px; height: 60px; left: 20%; }
+        .bubble:nth-child(3) { animation-duration: 8s; width: 20px; height: 20px; left: 40%; }
+        .bubble:nth-child(4) { animation-duration: 15s; width: 50px; height: 50px; left: 60%; }
+        .bubble:nth-child(5) { animation-duration: 10s; width: 30px; height: 30px; left: 80%; }
+
+        #uploadForm {
+            position: relative;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 10;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #4e54c8;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #4e54c8;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #6a67ce;
+        }
+
+        button {
+            background-color: #4e54c8;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #6a67ce;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            #uploadForm {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bubble background -->
+    <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <!-- Upload form -->
+    <div id="uploadForm">
+        <h2>Upload a File to S3</h2>
+        <input type="file" id="fileInput"><br>
+        <button onclick="uploadFile()">Upload</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function uploadFile() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://13.233.227.170:80/upload', true);
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('status').textContent = "File uploaded successfully!";
+                } else {
+                    document.getElementById('status').textContent = "Failed to upload: " + xhr.responseText;
+                }
+            };
+
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>

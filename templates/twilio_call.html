@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Call with Twilio</title>
+    <style>
+        /* Internal CSS for skyblur theme */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        input {
+            padding: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #status {
+            margin-top: 20px;
+            color: #fff;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Make a Call</h1>
+        <input type="text" id="phone_number" placeholder="Enter Phone Number">
+        <button onclick="makeCall()">Call Now</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function makeCall() {
+            const phone_number = document.getElementById('phone_number').value;
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.innerHTML = '';  // Reset status message
+
+            // AJAX request to Flask API
+            fetch('http://127.0.0.1:80/make_call', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ to_phone: phone_number })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    statusDiv.innerHTML = `Call initiated! Call SID: ${data.call_sid}`;
+                } else {
+                    statusDiv.innerHTML = `Failed to initiate call: ${data.message}`;
+                }
+            })
+            .catch(error => {
+                statusDiv.innerHTML = `Error: ${error}`;
+            });
+        }
+    </script>
+</body>
+</html>

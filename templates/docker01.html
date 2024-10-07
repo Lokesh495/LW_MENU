@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Command Runner</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #00ff99;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #00ff99;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.4s ease;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            background-color: #1d1d1d;
+            color: #00ff99;
+            padding: 20px;
+            border-radius: 10px;
+            height: 250px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            margin-top: 20px;
+            border: 2px solid #00ff99;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+
+            .output {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Docker Task</h1>
+        <div class="buttons">
+            <button onclick="runDockerCommand()">Run Docker Command</button>
+            <button onclick="runDockerPs()">Docker Containers</button>
+            <button onclick="runDockerRunning()">Docker Running Containers</button>
+            <button onclick="runDockerStart()">Docker Start</button>
+            <button onclick="runDockerExec()">Docker Exec</button>
+        </div>
+        <div id="output" class="output">Waiting for command...</div>
+    </div>
+
+    <script>
+        function executeDockerCommand(command, containerName = '', extraParam = '') {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = 'Processing...';
+
+            const bodyData = {
+                command: command,
+                container_name: containerName,
+                extra_param: extraParam
+            };
+
+            fetch('http://13.233.196.246:80/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    outputDiv.innerHTML = data.output;
+                } else {
+                    outputDiv.innerHTML = 'Error: ' + data.output;
+                }
+            })
+            .catch(error => {
+                outputDiv.innerHTML = 'Error: ' + error;
+            });
+        }
+
+        function runDockerCommand() {
+            const containerName = prompt("Enter container name:");
+            executeDockerCommand('docker run -dit ', containerName);
+        }
+
+        function runDockerPs() {
+            executeDockerCommand('docker ps -a');
+        }
+
+        function runDockerRunning() {
+            executeDockerCommand('docker ps ');
+        }
+
+        function runDockerStart() {
+            const imageId = prompt("Enter image ID:");
+            executeDockerCommand('docker start ', imageId);
+        }
+
+        function runDockerExec() {
+            const containerName = prompt("Enter container name:");
+            const command = prompt("Enter command to execute:");
+            executeDockerCommand('docker exec -it ', containerName, command);
+        }
+    </script>
+</body>
+</html>
