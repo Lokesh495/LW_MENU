@@ -71,7 +71,7 @@ project/
 └── README.md
 Installation
 1. Clone Repository
-git clone https://github.com/yourusername/ai-utility-hub.git
+git clone https://github.com/Lokesh495/LW_MENU.git
 
 cd ai-utility-hub
 2. Create Virtual Environment
